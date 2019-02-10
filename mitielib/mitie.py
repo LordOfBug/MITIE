@@ -179,7 +179,7 @@ def load_entire_file(filename):
     filename = to_bytes(filename)
     x = _f.mitie_load_entire_file(filename)
     if x is None:
-        raise Exception("Unable to load file " + filename)
+        raise Exception("Unable to load file " + to_default_str_type(filename))
     res = ctypes.string_at(x) 
     _f.mitie_free(x)
     return res
@@ -244,7 +244,7 @@ class named_entity_extractor:
                 self.__obj = _f.mitie_load_named_entity_extractor(filename)
 
         if self.__obj is None:
-            raise Exception("Unable to load named entity extractor from " + filename)
+            raise Exception("Unable to load named entity extractor from " + to_default_str_type(filename))
 
     def __del__(self):
         self.__mitie_free(self.__obj)
@@ -269,10 +269,10 @@ class named_entity_extractor:
         filename = to_bytes(filename)
         if (pure_model):
             if (_f.mitie_save_named_entity_extractor_pure_model(filename, self.__obj) != 0):
-                raise Exception("Unable to save named_entity_extractor to the file " + filename);
+                raise Exception("Unable to save named_entity_extractor to the file " + to_default_str_type(filename));
         else:
             if (_f.mitie_save_named_entity_extractor(filename, self.__obj) != 0):
-                raise Exception("Unable to save named_entity_extractor to the file " + filename);
+                raise Exception("Unable to save named_entity_extractor to the file " + to_default_str_type(filename));
 
     def extract_entities(self, tokens, feature_extractor=None):
         tags = self.get_possible_ner_tags()
@@ -361,7 +361,7 @@ class binary_relation_detector:
             filename = to_bytes(filename)
             self.__obj = _f.mitie_load_binary_relation_detector(filename)
         if self.__obj is None:
-            raise Exception("Unable to load binary relation detector from " + filename)
+            raise Exception("Unable to load binary relation detector from " + to_default_str_type(filename))
 
     def __del__(self):
         self.__mitie_free(self.__obj)
@@ -372,7 +372,7 @@ class binary_relation_detector:
             ner = binary_relation_detector(filename)"""
         filename = to_bytes(filename)
         if _f.mitie_save_binary_relation_detector(filename, self.__obj) != 0:
-            raise Exception("Unable to save binary_relation_detector to the file " + filename)
+            raise Exception("Unable to save binary_relation_detector to the file " + to_default_str_type(filename))
 
     def __str__(self):
         return "binary_relation_detector: " + \
@@ -486,7 +486,7 @@ class ner_trainer(object):
         self.__obj = _f.mitie_create_ner_trainer(filename)
         self.__mitie_free = _f.mitie_free
         if self.__obj is None:
-            raise Exception("Unable to create ner_trainer based on " + filename)
+            raise Exception("Unable to create ner_trainer based on " + to_default_str_type(filename))
 
     def __del__(self):
         self.__mitie_free(self.__obj)
@@ -700,15 +700,16 @@ _f.mitie_categorize_text_with_extractor.argtypes = (ctypes.c_void_p, ctypes.c_vo
 
 class text_categorizer:
     def __init__(self, filename, fe_filename=None):
-        filename = to_bytes(filename)
         self.__mitie_free = _f.mitie_free
         if isinstance(filename, ctypes.c_void_p):
             self.__obj = filename
         else:
+            filename = to_bytes(filename)
             if _f.mitie_check_text_categorizer_pure_model(filename) == 0:
                 if fe_filename is None:
                     self.__obj = _f.mitie_load_text_categorizer_pure_model_without_feature_extractor(filename)
                 else:
+                    fe_filename = to_bytes(fe_filename)
                     self.__obj = _f.mitie_load_text_categorizer_pure_model(filename, fe_filename)
             else:
                 self.__obj = _f.mitie_load_text_categorizer(filename)
@@ -730,7 +731,7 @@ class text_categorizer:
         filename = to_bytes(filename)
         if (pure_model):
             if (_f.mitie_save_text_categorizer_pure_model(filename, self.__obj) != 0):
-                raise Exception("Unable to save text_categorizer to the file " + filename);
+                raise Exception("Unable to save text_categorizer to the file " + to_default_str_type(filename));
         else:
             if (_f.mitie_save_text_categorizer(filename, self.__obj) != 0):
                 raise Exception("Unable to save text_categorizer to the file " + to_default_str_type(filename));
@@ -762,7 +763,7 @@ class text_categorizer_trainer(object):
         self.__obj = _f.mitie_create_text_categorizer_trainer(filename)
         self.__mitie_free = _f.mitie_free
         if self.__obj is None:
-            raise Exception("Unable to create text_categorizer_trainer based on " + filename)
+            raise Exception("Unable to create text_categorizer_trainer based on " + to_default_str_type(filename))
 
     def __del__(self):
         self.__mitie_free(self.__obj)
@@ -827,7 +828,7 @@ class total_word_feature_extractor:
         else:
             self.__obj = _f.mitie_load_total_word_feature_extractor(filename)
         if self.__obj is None:
-            raise Exception("Unable to load total_word_feature_extractor detector from " + filename)
+            raise Exception("Unable to load total_word_feature_extractor detector from " + to_default_str_type(filename))
 
     def __del__(self):
         self.__mitie_free(self.__obj)
